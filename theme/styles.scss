@@ -1,0 +1,48 @@
+.myfinder-modal{
+    .myfinder-modal-body{
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 500px;
+        > .row{
+            height: 100%;
+            .nav-item.active{
+                background: #dce7f1;
+            }
+        }
+        .myfinder-explorer{
+            height: 100%;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            margin-right: -15px;
+            margin-left: -15px;  
+        }
+    }
+    
+    .myfinder-sidebar-sticky {
+        position: -webkit-sticky;
+        position: sticky;
+    }
+    .myfinder-sidebar-sticky {
+        position: relative;
+        top: 0;
+        padding-top: .5rem;
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100%;
+    }
+    .myfinder-createFolder-form{
+        position: absolute;
+        bottom: 0;
+        background: #eee;
+        right: 0;
+    }
+    .myfinder-upload-form{
+        position: absolute;
+        bottom: 0;
+        background: #eee;
+        right: 0;
+    }
+    .h100perc{
+        height: 100%;
+    }
+}
