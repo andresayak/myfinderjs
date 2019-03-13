@@ -1,3 +1,11 @@
+## Getting Started
+
+
+### tl;dr
+
+```
+npm install -g @andresayak/myfinder
+
 
 FOR LARAVE MIX
 
