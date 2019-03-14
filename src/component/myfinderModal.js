@@ -35,7 +35,7 @@ export default class MyFinderModal extends React.Component {
         }
     }
     
-    handleSelectedFile = event => {
+    handleSelectedFile = (event) => {
         this.setState({
             fileFile: event.target.files[0],
         });
