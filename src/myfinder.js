@@ -12,7 +12,7 @@ import MyFinderCommand from './myfindercommand';
  */
 export default class MyFinder{// extends Plugin{
     
-    static get pluginName() {
+    static get pluginName() {console.log('init');
 	return 'MyFinder';
     }
     static get requires() {

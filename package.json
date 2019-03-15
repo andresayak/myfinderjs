@@ -1,69 +1,67 @@
 {
-  "name": "@andresayak/myfinder",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "lint": "eslint --quiet '**/*.js'"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/andresayak/myfinderjs.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/andresayak/myfinderjs/issues"
-  },
-  "homepage": "https://github.com/andresayak/myfinderjs#readme",
-  "bundleDependencies": false,
-  "dependencies": {
-    "@ckeditor/ckeditor5-adapter-ckfinder": "^11.0.0",
-    "@ckeditor/ckeditor5-core": "^12.0.0",
-    "@ckeditor/ckeditor5-ui": "^12.0.0",
-    "@ckeditor/ckeditor5-widget": "^11.0.0",
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4",
-    "react-time-format": "0.0.5",
-    "reactstrap": "^6.5.0"
-  },
-  "deprecated": false,
-  "devDependencies": {
-    "@ckeditor/ckeditor5-clipboard": "^11.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^12.0.0",
-    "@ckeditor/ckeditor5-engine": "^13.0.0",
-    "@ckeditor/ckeditor5-image": "^13.0.0",
-    "@ckeditor/ckeditor5-link": "^11.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^11.0.0",
-    "@ckeditor/ckeditor5-utils": "^12.0.0",
-    "eslint": "^5.5.0",
-    "eslint-config-ckeditor5": "^1.0.11",
-    "husky": "^1.3.1",
-    "lint-staged": "^7.0.0"
-  },
-  "engines": {
-    "node": ">=8.0.0",
-    "npm": ">=5.7.1"
-  },
-  "eslintIgnore": [
-    "src/lib/**",
-    "packages/**"
-  ],
-  "files": [
-    "lang",
-    "src",
-    "theme",
-    "scss/**/*.scss"
-  ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "**/*.js": [
-      "eslint --quiet"
-    ]
-  },
-  "description": "FOR LARAVE MIX",
-  "keywords": []
+    "name": "@andresayak/myfinder",
+    "version": "1.0.8",
+    "scripts": {
+        "build": "babel src --out-dir dist",
+        "prepublish": "npm run build"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/andresayak/myfinderjs.git"
+    },
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/andresayak/myfinderjs/issues"
+    },
+    "homepage": "https://github.com/andresayak/myfinderjs#readme",
+    "bundleDependencies": false,
+    "dependencies": {
+        "@ckeditor/ckeditor5-adapter-ckfinder": "^11.0.0",
+        "@ckeditor/ckeditor5-core": "^12.0.0",
+        "@ckeditor/ckeditor5-ui": "^12.0.0",
+        "@ckeditor/ckeditor5-utils": "^12.0.0",
+        "@ckeditor/ckeditor5-widget": "^11.0.0",
+        "cross-env": "^5.2.0",
+        "react": "^16.8.4",
+        "react-dom": "^16.8.4",
+        "react-time-format": "0.0.5",
+        "reactstrap": "^6.5.0",
+        "raw-loader": "^1.0.0",
+        "css-loader": "^2.1.1",
+        "style-loader": "^0.23.1",
+        "yargs": "^13.2.2"
+    },
+    "deprecated": false,
+    "devDependencies": {
+        "@babel/cli": "^7.2.3",
+        "@babel/core": "^7.3.4",
+        "@babel/plugin-proposal-class-properties": "^7.3.4",
+        "@babel/plugin-transform-modules-commonjs": "^7.2.0",
+        "@babel/plugin-transform-runtime": "^7.3.4",
+        "@babel/preset-env": "^7.3.4",
+        "@babel/preset-es2015": "^7.0.0-beta.53",
+        "@babel/preset-react": "^7.0.0",
+        "babel-loader": "^8.0.5",
+        "babel-preset-minify": "^0.5.0",
+        "html-webpack-plugin": "^3.2.0",
+        "webpack": "^4.29.6",
+        "webpack-cli": "^3.2.3",
+        "webpack-node-externals": "^1.7.2"
+    },
+    "engines": {
+        "node": ">=8.0.0",
+        "npm": ">=5.7.1"
+    },
+    "esnext": "src",
+    "files": [
+        "lang",
+        "dist",
+        "src",
+        "theme",
+        "theme/icons/*.svg"
+    ],
+    "description": "FOR LARAVE MIX",
+    "keywords": [],
+    "main": "dist/index.js"
 }
