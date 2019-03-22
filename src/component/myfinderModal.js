@@ -14,6 +14,7 @@ export default class MyFinderModal extends React.Component {
             directories: [],
             files: [],
             openDir: null,
+            selectFile: null,
             showFormCreateForlder: false,
             showModalRemoveFolder: false,
             showFormUpload: false,
@@ -51,6 +52,18 @@ export default class MyFinderModal extends React.Component {
                 config: { headers: {'Content-Type': 'multipart/form-data' }}
             })
             .then(this.catchResponse)
+    }
+    
+    handleRemoveFile() {
+        this.requestGetBrowserData();
+        this.setState((prev) => {
+            prev.selectFile = !prev.showModalRemoveFolder;
+            return prev;
+        });
+        this.setState({
+            selectFile: null
+        });
+        this.requestGetBrowserData();
     }
     
     catchResponse = (response) => {
@@ -160,6 +173,12 @@ export default class MyFinderModal extends React.Component {
                         {this.state.openDir?
                         <Button color="danger" onClick={() => this.toggleRemoveFolder()}>Remove folder</Button>
                         :null}
+                        {this.state.selectFile?
+                        <Button color="primary" onClick={() => this.handleInsertSelectedFile(this.state.selectFile)}>Select file</Button>
+                        :null}
+                        {this.state.selectFile?
+                        <Button color="danger" onClick={() => this.handleRemoveFile(this.state.selectFile)}>Remove file</Button>
+                        :null}
                         <Button color="primary" onClick={() => this.toggleUpload()}>Upload</Button>
                         <Button color="primary" onClick={() => this.toggleCreateFolder()}>Create folder</Button>
                     </ModalFooter>
@@ -199,6 +218,13 @@ export default class MyFinderModal extends React.Component {
     }
     
     handleSelectFile (url) {
+        this.setState((prev) => {
+            prev.selectFile = url;
+            return prev;
+        });
+    }
+    
+    handleInsertSelectedFile (url) {
         window.myfinderChooseCallback(url);
         this.toggle();
     }
@@ -244,18 +270,12 @@ export default class MyFinderModal extends React.Component {
                         <div className="p-2">
                             <h4>{'/'+(this.state.openDir?this.state.openDir:'')}</h4>
                         </div>
-                        <Table>
-                            <tbody>
-                                {this.state.files.map((item, key)=>{
-                                    return (
-                                        <tr key={key} className="col-md-4 m-2">
-                                            <td><a target="_blank" href={item.url}>{item.filename}</a></td>
-                                            <td>{this.getReadableFileSizeString(item.filesize)}</td>
-                                            <td className="text-right"><Button size="sm" onClick={()=>this.handleSelectFile(item.url)}>Select</Button></td>
-                                        </tr>);
-                                })}
-                            </tbody>
-                        </Table>
+                        <div className="myfinder-grid">
+                            {this.state.files.map((item, key)=>{
+                                return (
+                                    <div key={key} className={'myfinder-grid-item'+((item.url == this.state.selectFile)?' active':'')} style={{backgroundImage: 'url('+item.url+')'}} onClick={()=>this.handleSelectFile(item.url)}></div>);
+                            })}
+                        </div>
                     </div>
                     {this.state.showFormCreateFolder?
                     <Form inline onSubmit={this.handleCreateFolderSubmit} className="myfinder-createFolder-form p-3">
