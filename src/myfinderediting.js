@@ -9,7 +9,7 @@ import MyFinderCommand from './myfindercommand';
 /**
  * @extends module:core/plugin~Plugin
  */
-export default class MyFinderEditing extends Plugin {
+export default class MyFinderEditing {
     /**
      * @inheritDoc
      */
@@ -24,6 +24,9 @@ export default class MyFinderEditing extends Plugin {
         return [];//[Notification];
     }
 
+    constructor(editor) {
+        this.editor = editor;
+    }
     /**
      * @inheritDoc
      */

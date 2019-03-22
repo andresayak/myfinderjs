@@ -2,16 +2,10 @@
  * @module andresayak/myfinderui
  */
 
-import Plugin from './plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import browseFilesIcon from './../theme/icons/browse-files.svg';
 
-/**
- * The CKFinder UI plugin. It introduces he `'ckfinder'` toolbar button.
- *
- * @extends module:core/plugin~Plugin
- */
-export default class MyFinderUI extends Plugin {
+export default class MyFinderUI{
     /**
      * @inheritDoc
      */
@@ -19,6 +13,9 @@ export default class MyFinderUI extends Plugin {
         return 'MyFinderUI';
     }
 
+    constructor(editor) {
+        this.editor = editor;
+    }
     /**
      * @inheritDoc
      */

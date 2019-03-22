@@ -1,6 +1,6 @@
 {
     "name": "@andresayak/myfinder",
-    "version": "1.0.8",
+    "version": "1.0.10",
     "scripts": {
         "build": "babel src --out-dir dist",
         "prepublish": "npm run build"
@@ -9,7 +9,7 @@
         "type": "git",
         "url": "git+ssh://git@github.com/andresayak/myfinderjs.git"
     },
-    "author": "",
+    "author": "Andrey Sayak <andresayak@gmail.com>",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/andresayak/myfinderjs/issues"
