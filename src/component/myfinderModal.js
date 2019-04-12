@@ -228,6 +228,7 @@ export default class MyFinderModal extends React.Component {
         window.myfinderChooseCallback(url);
         this.toggle();
     }
+    
     handleSelectDir(dirname) {
         this.setState((prev) => {
             prev.openDir = dirname;
@@ -251,7 +252,7 @@ export default class MyFinderModal extends React.Component {
     renderContainer() {
         return (
             <div className="row">
-                <div className="col-md-3 d-none d-md-block bg-light sidebar h100perc">
+                <div className="col-md-3 d-none d-md-block bg-light myfinder-sidebar h100perc">
                     <div className="myfinder-sidebar-sticky">
                         <Nav vertical>
                             <NavItem active={!this.state.openDir}>

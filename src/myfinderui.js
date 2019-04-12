@@ -3,7 +3,7 @@
  */
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import browseFilesIcon from './../theme/icons/browse-files.svg';
+import imageIcon from './../theme/icons/image.svg';
 
 export default class MyFinderUI{
     /**
@@ -34,7 +34,7 @@ export default class MyFinderUI{
             });
             button.set({
                 label: t('Insert image or file'),
-                icon: browseFilesIcon,
+                icon: imageIcon,
                 tooltip: true
             });
             button.bind('isEnabled').to(command);
