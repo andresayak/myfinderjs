@@ -9,14 +9,61 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 /**
  * @extends module:core/command~Command
  */
+
+function findOptimalInsertionPosition(selection, model) {
+    const selectedElement = selection.getSelectedElement();
+
+    if (selectedElement && model.schema.isBlock(selectedElement)) {
+        return model.createPositionAfter(selectedElement);
+    }
+
+    const firstBlock = selection.getSelectedBlocks().next().value;
+
+    if (firstBlock) {
+        // If inserting into an empty block – return position in that block. It will get
+        // replaced with the image by insertContent(). #42.
+        if (firstBlock.isEmpty) {
+            return model.createPositionAt(firstBlock, 0);
+        }
+
+        const positionAfter = model.createPositionAfter(firstBlock);
+
+        // If selection is at the end of the block - return position after the block.
+        if (selection.focus.isTouching(positionAfter)) {
+            return positionAfter;
+        }
+
+        // Otherwise return position before the block.
+        return model.createPositionBefore(firstBlock);
+    }
+
+    return selection.focus;
+}
+
+function insertImage(writer, model, attributes = {}) {
+    const imageElement = writer.createElement('image', attributes);
+
+    const insertAtSelection = findOptimalInsertionPosition(model.document.selection, model);
+
+    model.insertContent(imageElement, insertAtSelection);
+
+    // Inserting an image might've failed due to schema regulations.
+    if (imageElement.parent) {
+        writer.setSelection(imageElement, 'on');
+    }
+}
+
 export default class MyFinderCommand {
     /**
      * @inheritDoc
      */
     constructor(editor) {
         this.editor = editor;
-        window.myfinderChooseCallback = (url) => {
-            editor.execute('imageInsert', {source: [url]});
+        window.myfinderChooseCallback = (url, title, caption, alt) => {
+            const model = this.editor.model;
+            model.change(writer => {
+                insertImage(writer, model, {src: url, alt: alt, title: title});
+            });
         };
         this.value = undefined;
         this.isEnabled = true;

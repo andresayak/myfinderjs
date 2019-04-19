@@ -4,6 +4,7 @@ import { Form, FormText, FormGroup, Label, Input, FormFeedback,  Col} from 'reac
 import {Nav, NavItem, NavLink} from 'reactstrap';
 import {Table} from 'reactstrap';
 import './../../theme/styles.scss';
+import Time from 'react-time-format';
 
 export default class MyFinderModal extends React.Component {
     
@@ -18,12 +19,17 @@ export default class MyFinderModal extends React.Component {
             showFormCreateForlder: false,
             showModalRemoveFolder: false,
             showFormUpload: false,
+            withFolders: false,
             fileFile: null,
             errors: {}
         };
         this.folderNameRef = React.createRef();
         this.fileRef = React.createRef();
         this.toggle = props.toggle.bind(this);
+        this.titleRef = React.createRef();
+        this.captionRef = React.createRef();
+        this.fileRef = React.createRef();
+        this.altRef = React.createRef();
     }
 
     componentWillReceiveProps(props) {
@@ -127,8 +133,6 @@ export default class MyFinderModal extends React.Component {
         }
         if(this.state.fileFile)
             formData.append('file', this.state.fileFile, this.state.fileFile.name)
-        
-        console.log(this.state.fileFile, this.fileRef);
         return axios({
                 method: 'post',
                 url: '/api/myfinder/upload', 
@@ -165,22 +169,27 @@ export default class MyFinderModal extends React.Component {
         return (
             <div>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className="myfinder-modal modal-dialog-centered modal-xl">
-                    <ModalHeader toggle={this.toggle}>File manager</ModalHeader>
+                    <ModalHeader toggle={this.toggle}>Add Media</ModalHeader>
+                    <Nav tabs>
+                        <NavItem>
+                            <NavLink className="active" >
+                                Media library
+                            </NavLink>
+                        </NavItem>
+                    </Nav>
                     <ModalBody className="myfinder-modal-body">
                         {this.renderContainer()}
                     </ModalBody>
                     <ModalFooter className="text-center">
-                        {this.state.openDir?
+                        <Button color="primary" onClick={() => this.toggleUpload()}>Upload</Button>
+                        {this.state.openDir && this.state.withFolders?
                         <Button color="danger" onClick={() => this.toggleRemoveFolder()}>Remove folder</Button>
                         :null}
                         {this.state.selectFile?
                         <Button color="primary" onClick={() => this.handleInsertSelectedFile(this.state.selectFile)}>Select file</Button>
                         :null}
-                        {this.state.selectFile?
-                        <Button color="danger" onClick={() => this.handleRemoveFile(this.state.selectFile)}>Remove file</Button>
-                        :null}
-                        <Button color="primary" onClick={() => this.toggleUpload()}>Upload</Button>
-                        <Button color="primary" onClick={() => this.toggleCreateFolder()}>Create folder</Button>
+                        {this.state.withFolders?
+                        <Button color="primary" onClick={() => this.toggleCreateFolder()}>Create folder</Button>:null}
                     </ModalFooter>
                 </Modal>
             </div>
@@ -217,15 +226,15 @@ export default class MyFinderModal extends React.Component {
         });
     }
     
-    handleSelectFile (url) {
+    handleSelectFile (item) {
         this.setState((prev) => {
-            prev.selectFile = url;
+            prev.selectFile = item;
             return prev;
         });
     }
     
-    handleInsertSelectedFile (url) {
-        window.myfinderChooseCallback(url);
+    handleInsertSelectedFile (item) {
+        window.myfinderChooseCallback(item.url, this.titleRef.value, this.captionRef.value, this.altRef.value);
         this.toggle();
     }
     
@@ -252,6 +261,7 @@ export default class MyFinderModal extends React.Component {
     renderContainer() {
         return (
             <div className="row">
+                {this.state.withFolders?
                 <div className="col-md-3 d-none d-md-block bg-light myfinder-sidebar h100perc">
                     <div className="myfinder-sidebar-sticky">
                         <Nav vertical>
@@ -265,16 +275,17 @@ export default class MyFinderModal extends React.Component {
                             })}
                         </Nav>
                     </div>
-                </div>
-                <div className="col-md-9 ml-sm-auto col-lg-9 h100perc">
+                </div>:null}
+                <div className={this.state.withFolders?'col-md-9 ml-sm-auto col-lg-9 h100perc':'col-md-9 col-lg-9 h100perc'}>
                     <div className="myfinder-explorer">
-                        <div className="p-2">
-                            <h4>{'/'+(this.state.openDir?this.state.openDir:'')}</h4>
-                        </div>
                         <div className="myfinder-grid">
                             {this.state.files.map((item, key)=>{
                                 return (
-                                    <div key={key} className={'myfinder-grid-item'+((item.url == this.state.selectFile)?' active':'')} style={{backgroundImage: 'url('+item.url+')'}} onClick={()=>this.handleSelectFile(item.url)}></div>);
+                                    <div key={key}
+                                        className={'myfinder-grid-item'+((this.state.selectFile && item.url == this.state.selectFile.url)?' active':'')} 
+                                        style={{backgroundImage: 'url("'+item.url+'")'}} 
+                                        onClick={()=>this.handleSelectFile(item)}></div>
+                                );
                             })}
                         </div>
                     </div>
@@ -314,6 +325,54 @@ export default class MyFinderModal extends React.Component {
                         <Button color="primary">Ok</Button>{' '}
                         <Button color="secondary" onClick={()=>this.toggleCancel()}>Cancel</Button>
                     </Form>:null}
+                </div>
+                <div className="col-md-3 d-none d-md-block bg-light myfinder-sidebar h100perc">
+                    {this.state.selectFile?
+                    <div>
+                        <div className="py-3">
+                            <h4>Attachment details</h4>
+                            <div className="selectfile-block">
+                                <div className=""></div>
+                                <div className="">
+                                    <b>{this.state.selectFile.filename}</b>
+                                    <p>
+                                    <Time value={new Date(this.state.selectFile.lastModified*1000)} format={'YYYY/MM/DD'} />
+                                    <br/>
+                                    {this.getReadableFileSizeString(this.state.selectFile.filesize)}<br/>
+                                    {this.state.selectFile.getimagesize[0]+'x'+this.state.selectFile.getimagesize[1]}</p>
+                                    <Button color="danger" size="sm" onClick={() => this.handleRemoveFile(this.state.selectFile)}>Remove file</Button>
+                                </div>
+                            </div>
+                            <hr/>
+                        </div>
+                        <div className="selectfile-folder">
+                            <FormGroup row>
+                                <Label for="inputUrl" sm={3}>URL</Label>
+                                <Col sm={9}>
+                                    <Input
+                                        id="inputUrl"
+                                        disabled={true}
+                                        defaultValue={this.state.selectFile.url}
+                                        type="text"/>
+                                    {this.renderError('caption')}
+                                </Col>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Label for="inputCaption" sm={3}>Caption</Label>
+                                <Col sm={9}>
+                                    <Input id="inputCaption" innerRef={input => (this.captionRef = input)} type="textarea" required={true}/>
+                                    {this.renderError('caption')}
+                                </Col>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Label for="inputAlt" sm={3}>Alt</Label>
+                                <Col sm={9}>
+                                    <Input id="inputAlt" innerRef={input => (this.altRef = input)} type="text" required={true}/>
+                                    {this.renderError('alt')}
+                                </Col>
+                            </FormGroup>
+                        </div>
+                    </div>:null}
                 </div>
             </div>
         );

@@ -1,4 +1,10 @@
 .myfinder-modal{
+    .modal-header{
+        border-bottom: 0;
+    }
+    .nav.nav-tabs{
+        padding-left: 20px;
+    }
     .myfinder-modal-body{
         padding-top: 0;
         padding-bottom: 0;
@@ -47,8 +53,8 @@
     }
     .myfinder-grid{
         .myfinder-grid-item{
-            width: 100px;
-            height: 100px;
+            width: 185px;
+            height: 185px;
             float:left;
             margin: 10px;
             border: 3px solid #ccc;
