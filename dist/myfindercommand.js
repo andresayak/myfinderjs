@@ -4,7 +4,7 @@
 // replaced with the image by insertContent(). #42.
 if(d.isEmpty)return b.createPositionAt(d,0);var e=b.createPositionAfter(d);// If selection is at the end of the block - return position after the block.
 return a.focus.isTouching(e)?e:b.createPositionBefore(d);// Otherwise return position before the block.
-}return a.focus}function insertImage(a,b){var c=2<arguments.length&&arguments[2]!==void 0?arguments[2]:{};console.log("insertImage",c);var d=a.createElement("image",c),e=findOptimalInsertionPosition(b.document.selection,b);b.insertContent(d,e),d.parent&&a.setSelection(d,"on")}var MyFinderCommand=/*#__PURE__*/function(){/**
+}return a.focus}function insertImage(a,b){var c=2<arguments.length&&arguments[2]!==void 0?arguments[2]:{},d=a.createElement("image",c),e=findOptimalInsertionPosition(b.document.selection,b);b.insertContent(d,e),d.parent&&a.setSelection(d,"on")}var MyFinderCommand=/*#__PURE__*/function(){/**
      * @inheritDoc
      */function a(b){var c=this;_classCallCheck(this,a),this.editor=b,window.myfinderChooseCallback=function(a,b,d,e){var f=c.editor.model;f.change(function(c){insertImage(c,f,{src:a,alt:e,title:b})})},this.value=void 0,this.isEnabled=!0,this.decorate("execute"),this.listenTo(this.editor.model.document,"change",function(){c.refresh()}),this.on("execute",function(a){c.isEnabled||a.stop()},{priority:"high"}),this.listenTo(b,"change:isReadOnly",function(a,b,d){d?(c.on("set:isEnabled",forceDisable,{priority:"highest"}),c.isEnabled=!1):(c.off("set:isEnabled",forceDisable),c.refresh())}),this.stopListening(this.editor.model.document,"change"),this.listenTo(this.editor.model.document,"change",function(){return c.refresh()},{priority:"low"})}/**
      * @inheritDoc

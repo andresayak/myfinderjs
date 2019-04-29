@@ -87,6 +87,8 @@ export default class MyFinderModal extends React.Component {
                 prev.files = response.data.files;
             }
             prev.files = response.data.files;
+            
+            prev.selectFile = prev.files[0];
             return prev;
         });
     }
