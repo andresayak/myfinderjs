@@ -1,6 +1,6 @@
 {
     "name": "@andresayak/myfinder",
-    "version": "1.0.14",
+    "version": "1.0.18",
     "scripts": {
         "build": "babel src --out-dir dist",
         "prepublish": "npm run build"

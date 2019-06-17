@@ -42,12 +42,6 @@ export default class MyFinderModal extends React.Component {
         }
     }
     
-    handleSelectedFile = (event) => {
-        this.setState({
-            fileFile: event.target.files[0],
-        });
-    }
-    
     requestGetBrowserData(dirname = null) {
         return axios({
                 method: 'post',
@@ -60,16 +54,19 @@ export default class MyFinderModal extends React.Component {
             .then(this.catchResponse)
     }
     
-    handleRemoveFile() {
-        this.requestGetBrowserData();
-        this.setState((prev) => {
-            prev.selectFile = !prev.showModalRemoveFolder;
-            return prev;
-        });
+    handleRemoveFile(e, item) {
         this.setState({
             selectFile: null
         });
-        this.requestGetBrowserData();
+        return axios({
+                method: 'post',
+                url: '/api/myfinder/remove', 
+                data: {
+                    file: item.filename
+                },
+                config: { headers: {'Content-Type': 'multipart/form-data' }}
+            })
+            .then(this.catchResponse)
     }
     
     catchResponse = (response) => {
@@ -124,8 +121,8 @@ export default class MyFinderModal extends React.Component {
             });
     }
     
-    handleUploadSubmit = (e) => {
-        e.preventDefault();
+    handleUploadSubmit = (event) => {
+        //event.preventDefault();
         var data = {
             dir: this.state.openDir?this.state.openDir:'',
         };
@@ -133,8 +130,8 @@ export default class MyFinderModal extends React.Component {
         for (var key in data){
             formData.append(key, data[key]);
         }
-        if(this.state.fileFile)
-            formData.append('file', this.state.fileFile, this.state.fileFile.name)
+        console.log(' event.target',  event.target.files[0]);
+        formData.append('file', event.target.files[0], event.target.files[0].name)
         return axios({
                 method: 'post',
                 url: '/api/myfinder/upload', 
@@ -143,7 +140,6 @@ export default class MyFinderModal extends React.Component {
             })
             .then((response)=>{
                 this.fileRef.value = '';
-                this.toggleUpload();
                 this.catchResponse(response);
             })
             .catch(error => {
@@ -183,7 +179,15 @@ export default class MyFinderModal extends React.Component {
                         {this.renderContainer()}
                     </ModalBody>
                     <ModalFooter className="text-center">
-                        <Button color="primary" onClick={() => this.toggleUpload()}>Upload</Button>
+                        <Label color="light" for="inputFile" className="btn-file">
+                            <Input
+                                id="inputFile"
+                                innerRef={input => (this.fileRef = input)}
+                                onChange={this.handleUploadSubmit}
+                                type="file"
+                                required={true}/>
+                            <span><i className="fa fa-upload" aria-hidden="true"></i> Upload</span>
+                        </Label>
                         {this.state.openDir && this.state.withFolders?
                         <Button color="danger" onClick={() => this.toggleRemoveFolder()}>Remove folder</Button>
                         :null}
@@ -212,18 +216,10 @@ export default class MyFinderModal extends React.Component {
         });
     }
     
-    toggleUpload () {
-        this.setState((prev) => {
-            prev.showFormUpload = !prev.showFormUpload;
-            return prev;
-        });
-    }
-    
     toggleCancel = () => {
         this.setState((prev) => {
             prev.showModalRemoveFolder = false;
             prev.showFormCreateFolder = false;
-            prev.showFormUpload = false;
             return prev;
         });
     }
@@ -286,6 +282,7 @@ export default class MyFinderModal extends React.Component {
                                     <div key={key}
                                         className={'myfinder-grid-item'+((this.state.selectFile && item.url == this.state.selectFile.url)?' active':'')} 
                                         style={{backgroundImage: 'url("'+item.url+'")'}} 
+                                        onDoubleClick={()=>this.handleInsertSelectedFile(item)}
                                         onClick={()=>this.handleSelectFile(item)}></div>
                                 );
                             })}
@@ -305,20 +302,6 @@ export default class MyFinderModal extends React.Component {
                         <Button color="primary">Ok</Button>{' '}
                         <Button color="secondary" onClick={()=>this.toggleCancel()}>Cancel</Button>
                     </Form>:null}
-                    {this.state.showFormUpload?
-                    <Form inline onSubmit={this.handleUploadSubmit} className="myfinder-upload-form p-3">
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Label for="inputFile" className="mr-sm-2">File</Label>
-                            <Input
-                                id="inputFile"
-                                innerRef={input => (this.fileRef = input)}
-                                onChange={this.handleSelectedFile}
-                                type="file"
-                                required={true}/>
-                        </FormGroup>
-                        <Button color="primary">Ok</Button>{' '}
-                        <Button color="secondary" onClick={()=>this.toggleCancel()}>Cancel</Button>
-                    </Form>:null}
                     {this.state.showModalRemoveFolder?
                     <Form inline onSubmit={this.handleRemoveSubmit} className="myfinder-upload-form p-3">
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
@@ -328,8 +311,8 @@ export default class MyFinderModal extends React.Component {
                         <Button color="secondary" onClick={()=>this.toggleCancel()}>Cancel</Button>
                     </Form>:null}
                 </div>
+                {this.state.selectFile?
                 <div className="col-md-3 d-none d-md-block bg-light myfinder-sidebar h100perc">
-                    {this.state.selectFile?
                     <div>
                         <div className="py-3">
                             <h4>Attachment details</h4>
@@ -342,7 +325,7 @@ export default class MyFinderModal extends React.Component {
                                     <br/>
                                     {this.getReadableFileSizeString(this.state.selectFile.filesize)}<br/>
                                     {this.state.selectFile.getimagesize[0]+'x'+this.state.selectFile.getimagesize[1]}</p>
-                                    <Button color="danger" size="sm" onClick={() => this.handleRemoveFile(this.state.selectFile)}>Remove file</Button>
+                                    <Button color="danger" size="sm" onClick={(e) => this.handleRemoveFile(e, this.state.selectFile)}>Remove file</Button>
                                 </div>
                             </div>
                             <hr/>
@@ -374,8 +357,8 @@ export default class MyFinderModal extends React.Component {
                                 </Col>
                             </FormGroup>
                         </div>
-                    </div>:null}
-                </div>
+                    </div>
+                </div>:null}
             </div>
         );
     }

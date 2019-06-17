@@ -65,6 +65,7 @@ export default class MyFinderCommand {
                 insertImage(writer, model, {src: url, alt: alt, title: title});
             });
         };
+        
         this.value = undefined;
         this.isEnabled = true;
 
